@@ -33,13 +33,11 @@ const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY; // TODO: 自分
 const SampleMap = () => {
   const [mapProps, setMapProps] = useState<MapProps>(initialMapProps);
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: API_KEY }}
-        center={mapProps.center}
-        zoom={mapProps.zoom}
-      />
-    </div>
+    <GoogleMapReact
+      bootstrapURLKeys={{ key: API_KEY }}
+      center={mapProps.center}
+      zoom={mapProps.zoom}
+    />
   );
 };
 

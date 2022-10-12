@@ -1,16 +1,22 @@
 import React from 'react';
-import SampleComponent from './components/SampleComponent';
+import { LeftList } from './components/LeftList';
+import { Navbar } from './components/Navbar';
+import MapComponent from './components/SampleComponent';
 
 function App() {
   return (
-    <div className="flex flex-col  h-screen">
-      <h1 className="bg-sky-500/100 h-20">navibar</h1>
-      <div className="flex h-screen">
-        <div className="flex-initial w-2/6 h-full">
-          <h1>一覧出力</h1>
+    <div className="flex flex-col h-screen">
+      <div className="h-full">
+        <div className="sticky top-0 z-50 bg-white shadow-xl h-1/6">
+          <Navbar />
         </div>
-        <div className="flex-1 h-full">
-          <SampleComponent />
+        <div className="flex h-5/6">
+          <div className="flex-initial w-2/6 overflow-y-scroll">
+            <LeftList />
+          </div>
+          <div className="flex-1">
+            <MapComponent />
+          </div>
         </div>
       </div>
     </div>

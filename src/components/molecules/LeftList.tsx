@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from './Card';
+import { Card } from '../atoms/Card';
 import { Link } from 'react-router-dom';
 
 export const LeftList = () => {

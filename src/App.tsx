@@ -1,26 +1,13 @@
 import React from 'react';
-import { LeftList } from './components/LeftList';
-import { Navbar } from './components/Navbar';
-import MapComponent from './components/SampleComponent';
-
-function App() {
-  return (
-    <div className="flex flex-col h-screen">
-      <div className="h-full">
-        <div className="sticky top-0 z-50 bg-white shadow-xl h-1/6">
-          <Navbar />
-        </div>
-        <div className="flex h-5/6">
-          <div className="flex-initial w-2/6 overflow-y-scroll">
-            <LeftList />
-          </div>
-          <div className="flex-1">
-            <MapComponent />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+import { MapPage } from './components/MapPage';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Home } from './components/Home';
+const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="maps" element={<MapPage />} />
+    </Routes>
+  </BrowserRouter>
+);
 export default App;

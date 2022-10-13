@@ -1,6 +1,6 @@
 import React from 'react';
 import { LeftList } from '../molecules/LeftList';
-import MapComponent from '../molecules/SampleComponent';
+import MapComponent from '../molecules/Map';
 export const MapPage = () => {
   return (
     <div className="flex flex-col h-screen">

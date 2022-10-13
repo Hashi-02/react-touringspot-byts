@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import GoogleMapReact from 'google-map-react';
+
 /**
  * Mapに使用するプロパティ
  */
@@ -20,6 +21,10 @@ const initialMapProps: MapProps = {
     lng: 139.44,
   },
   zoom: 18,
+};
+const positionIwamotocho = {
+  lat: 35.69397,
+  lng: 139.7762,
 };
 
 /**

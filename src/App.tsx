@@ -2,11 +2,13 @@ import React from 'react';
 import { MapPage } from './components/pages/MapPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Home } from './components/pages/HomePage';
+import { DetailPage } from './components/pages/DetailPage';
 const App = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="maps" element={<MapPage />} />
+      <Route path="maps/detailid" element={<DetailPage />} />
     </Routes>
   </BrowserRouter>
 );

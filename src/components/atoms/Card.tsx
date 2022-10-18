@@ -1,23 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+type Props = {
+  routing: string;
+  imgSrc: string;
+  title: string;
+  description: string;
+};
 
-export const Card = () => {
+export const Card = (props: Props) => {
   return (
-    <Link to="/maps/detailid">
+    <Link to={props.routing}>
       <button className="m-3">
         <div className="w-full p-2 rounded-lg shadow-xl lg:flex lg:max-w-lg">
           <img
             className="object-cover w-full lg:w-40 lg:h-40 rounded-lg"
-            src="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
+            src={props.imgSrc}
             alt=""
           />
           <div className="pl-2">
             <h4 className="text-xl font-semibold tracking-tight text-blue-600">
-              大京暮敷の里
+              {props.title}
             </h4>
-            <p className="mb-2 leading-normal">
-              空が紫色で綺麗な満月が見える異世界のような場所でおすすめです 。
-            </p>
+            <p className="mb-2 leading-normal">{props.description}</p>
           </div>
         </div>
       </button>

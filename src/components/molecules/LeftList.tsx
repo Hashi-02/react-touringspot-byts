@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from '../atoms/Card';
+import { Card } from '../atoms/card/Card';
 import { BaseButton } from '../atoms/button/BaseButton';
 
 export const LeftList: React.FC = () => {
@@ -16,7 +16,7 @@ export const LeftList: React.FC = () => {
               routing="/maps/detailid"
               imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
               title="大京暮敷の里"
-              description="空が紫色で綺麗な満月が見える異世界のような場所でおすすめです 。"
+              description="空が紫色で綺麗な満月が見える異世界のような場所でおすすめです。"
             />
           ))}
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { BaseButton } from '../atoms/button/BaseButton';
 import { LeftList } from '../molecules/LeftList';
 import MapComponent from '../molecules/Map';
 export const MapPage = () => {
@@ -8,8 +9,11 @@ export const MapPage = () => {
         <div className="flex-initial w-2/6 overflow-y-scroll">
           <LeftList />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <MapComponent />
+          <div className="absolute top-3 right-20">
+            <BaseButton text="スポットを追加する" routing="/add" />
+          </div>
         </div>
       </div>
     </div>

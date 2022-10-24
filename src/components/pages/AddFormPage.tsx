@@ -5,8 +5,9 @@ import { withFormik, FormikProps, FormikErrors, Form, Field } from 'formik';
 
 // Shape of form values
 interface FormValues {
-  email: string;
-  password: string;
+  placeName: string;
+  file: string;
+  description: string;
 }
 
 interface OtherProps {
@@ -17,17 +18,63 @@ interface OtherProps {
 const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
   const { touched, errors, isSubmitting, message } = props;
   return (
-    <Form>
+    <Form className="w-full max-w-sm">
       <h1>{message}</h1>
-      <Field type="email" name="email" />
-      {touched.email && errors.email && <div>{errors.email}</div>}
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/3">
+          <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+            地名
+          </label>
+        </div>
+        <div className="md:w-2/3">
+          <Field
+            type="text"
+            name="placeName"
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+          />
+        </div>
+      </div>
 
-      <Field type="password" name="password" />
-      {touched.password && errors.password && <div>{errors.password}</div>}
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/3">
+          <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+            ファイル
+          </label>
+        </div>
+        <div className="md:w-2/3">
+          <Field
+            type="text"
+            name="file"
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+          />
+        </div>
+      </div>
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/3">
+          <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+            説明
+          </label>
+        </div>
+        <div className="md:w-2/3">
+          <Field
+            type="text"
+            name="description"
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+          />
+        </div>
+      </div>
 
-      <button type="submit" disabled={isSubmitting}>
-        Submit
-      </button>
+      <div className="md:flex md:items-center">
+        <div className="md:w-1/3"></div>
+        <div className="md:w-2/3">
+          <button
+            className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+            type="button"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
     </Form>
   );
 };
@@ -43,7 +90,9 @@ const MyForm = withFormik<MyFormProps, FormValues>({
   // Transform outer props into form values
   mapPropsToValues: (props) => {
     return {
-      email: props.initialEmail || '',
+      placeName: '',
+      file: '',
+      description: '',
       password: '',
     };
   },
@@ -51,10 +100,10 @@ const MyForm = withFormik<MyFormProps, FormValues>({
   // Add a custom validation function (this can be async too!)
   validate: (values: FormValues) => {
     let errors: FormikErrors<FormValues> = {};
-    if (!values.email) {
-      errors.email = 'Required';
-    } else if (!values.email) {
-      errors.email = 'Invalid email address';
+    if (!values.placeName) {
+      errors.placeName = 'Required';
+    } else if (!values.placeName) {
+      errors.placeName = 'Invalid placeName address';
     }
     return errors;
   },
@@ -69,6 +118,6 @@ export const AddFormPage = () => (
   <div>
     <h1>AddFormPage</h1>
     <BaseButton text="マップを見る" routing="/maps" />
-    <MyForm message="Sign up" />
+    <MyForm message="地名、名前、説明を記入" />
   </div>
 );

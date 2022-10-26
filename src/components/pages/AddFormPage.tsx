@@ -2,6 +2,8 @@ import { BaseButton } from '../atoms/button/BaseButton';
 import React from 'react';
 import * as Yup from 'yup';
 import { withFormik, FormikProps, FormikErrors, Form, Field } from 'formik';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 // Shape of form values
 interface FormValues {
@@ -69,7 +71,8 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
         <div className="md:w-2/3">
           <button
             className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-            type="button"
+            type="submit"
+            disabled={isSubmitting}
           >
             Submit
           </button>
@@ -81,7 +84,6 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
 
 // The type of props MyForm receives
 interface MyFormProps {
-  initialEmail?: string;
   message: string; // if this passed all the way through you might do this or make a union type
 }
 
@@ -93,7 +95,6 @@ const MyForm = withFormik<MyFormProps, FormValues>({
       placeName: '',
       file: '',
       description: '',
-      password: '',
     };
   },
 
@@ -108,12 +109,20 @@ const MyForm = withFormik<MyFormProps, FormValues>({
     return errors;
   },
 
-  handleSubmit: (values) => {
-    // do submitting things
+  handleSubmit: async (values) => {
+    const time = serverTimestamp();
+    console.log(values.placeName);
+    const usersCollectionRef = collection(db, 'users');
+    const documentRef = await addDoc(usersCollectionRef, {
+      placeName: values.placeName,
+      file: values.file,
+      description: values.description,
+      timestamp: time,
+    });
+    console.log(documentRef);
   },
 })(InnerForm);
 
-// Use <MyForm /> wherevs
 export const AddFormPage = () => (
   <div>
     <h1>AddFormPage</h1>

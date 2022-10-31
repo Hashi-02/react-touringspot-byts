@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 /**
  * Mapに使用するプロパティ
@@ -31,6 +33,35 @@ const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY; // TODO: 自分
  * サンプルとして地図を表示するコンポーネント
  */
 const SampleMap = () => {
+  type User = {
+    placeName: string;
+    file: string;
+    description: string;
+    Latitude: string;
+    Longitude: string;
+  };
+  const [users, setUsers] = useState<User[]>([]);
+  useEffect(() => {
+    const usersCollectionRef = collection(db, 'users');
+    getDocs(usersCollectionRef).then((querySnapshot) => {
+      const userList: User[] = [];
+      let count: number = 0;
+      querySnapshot.docs.map((doc, index) => {
+        if (count === index) {
+          const user: User = {
+            placeName: doc.data().placeName,
+            file: doc.data().file,
+            description: doc.data().description,
+            Latitude: doc.data().Latitude,
+            Longitude: doc.data().Longitude,
+          };
+          userList.push(user);
+          count += 1;
+        }
+      });
+      setUsers(userList);
+    });
+  }, []);
   const mapProps = initialMapProps;
   const navigate = useNavigate();
   const navigateDetail = (): void => {
@@ -58,13 +89,16 @@ const SampleMap = () => {
       '<img src=" ' +
       src +
       '" width="200"></img>' +
-      '<h1 id="title">Uluru</h1>' +
+      '<h1 id="title">' +
+      users[0].placeName +
+      '</h1>' +
       '<p id="description">aaa</p>' +
       '</button>';
     const infowindow = new maps.InfoWindow({
       content: contentString,
       maxWidth: 250,
     });
+
     items.forEach((item) => {
       const marker = new maps.Marker({
         position: {

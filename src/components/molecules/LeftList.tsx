@@ -5,8 +5,6 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const LeftList: React.FC = () => {
-  const test_numbers = [1, 2, 3, 4, 5];
-
   type User = {
     placeName: string;
     file: string;
@@ -38,33 +36,19 @@ export const LeftList: React.FC = () => {
   }, []);
   return (
     <>
-      <div className="">
-        <div className="text-center p-6">
-          <BaseButton text="戻る" routing="/" />
-        </div>
-        <div className="p-3">
-          {users.map((user, index) => (
-            <div key={index.toString()}>
-              <Card
-                routing="/maps/detailid"
-                imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
-                title={user.placeName}
-                description={user.description}
-              />
-            </div>
-          ))}
-        </div>
-        {/* <div className="p-3">
-          {test_numbers.map(() => (
-            <Card
-              routing="/maps/detailid"
-              imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
-              title="大京暮敷の里"
-              description="空が紫色で綺麗な満月が見える異世界のような場所でおすすめです。"
-            />
-          ))}
-        </div> */}
+      <div className="text-center p-6">
+        <BaseButton text="戻る" routing="/" />
       </div>
+      {users.map((user, index) => (
+        <div key={index.toString()}>
+          <Card
+            routing="/maps/detailid"
+            imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
+            title={user.placeName}
+            description={user.description}
+          />
+        </div>
+      ))}
     </>
   );
 };

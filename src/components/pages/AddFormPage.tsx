@@ -163,6 +163,8 @@ export const AddFormPage = () => (
   <div>
     <h1>AddFormPage</h1>
     <BaseButton text="マップを見る" routing="/maps" />
-    <MyForm message="地名、名前、説明を記入" />
+    <div className="flex justify-center">
+      <MyForm message="地名、名前、説明を記入" />
+    </div>
   </div>
 );

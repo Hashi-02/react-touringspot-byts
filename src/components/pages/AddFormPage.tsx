@@ -36,6 +36,9 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="placeName"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.placeName && errors.placeName && (
+            <div>{errors.placeName}</div>
+          )}
         </div>
       </div>
 
@@ -51,6 +54,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="Latitude"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.Latitude && errors.Latitude && <div>{errors.Latitude}</div>}
         </div>
       </div>
 
@@ -66,6 +70,9 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="Longitude"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.Longitude && errors.Longitude && (
+            <div>{errors.Longitude}</div>
+          )}
         </div>
       </div>
 
@@ -81,6 +88,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="file"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.file && errors.file && <div>{errors.file}</div>}
         </div>
       </div>
       <div className="md:flex md:items-center mb-6">
@@ -97,6 +105,9 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             rows="6"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.description && errors.description && (
+            <div>{errors.description}</div>
+          )}
         </div>
       </div>
 
@@ -138,9 +149,28 @@ const MyForm = withFormik<MyFormProps, FormValues>({
   validate: (values: FormValues) => {
     let errors: FormikErrors<FormValues> = {};
     if (!values.placeName) {
-      errors.placeName = 'Required';
-    } else if (!values.placeName) {
-      errors.placeName = 'Invalid placeName address';
+      errors.placeName = 'このフィールドは必須です';
+    } else if (values.placeName.length > 15) {
+      errors.placeName = '１５文字以下で入力してください';
+    }
+    if (!values.description) {
+      errors.description = 'このフィールドは必須です';
+    } else if (values.description.length > 15) {
+      errors.description = '１５文字以下で入力してください';
+    }
+    if (!values.Latitude) {
+      errors.Latitude = 'このフィールドは必須です';
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.Latitude)
+    ) {
+      errors.Latitude = '正しいメールアドレスを入力してください';
+    }
+    if (!values.Longitude) {
+      errors.Longitude = 'このフィールドは必須です';
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.Longitude)
+    ) {
+      errors.Longitude = '正しいメールアドレスを入力してください';
     }
     return errors;
   },

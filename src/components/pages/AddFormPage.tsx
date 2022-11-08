@@ -1,6 +1,5 @@
 import { BaseButton } from '../atoms/button/BaseButton';
 import React from 'react';
-import * as Yup from 'yup';
 import { withFormik, FormikProps, FormikErrors, Form, Field } from 'formik';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -36,6 +35,9 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="placeName"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.placeName && errors.placeName && (
+            <div>{errors.placeName}</div>
+          )}
         </div>
       </div>
 
@@ -51,6 +53,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="Latitude"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.Latitude && errors.Latitude && <div>{errors.Latitude}</div>}
         </div>
       </div>
 
@@ -66,6 +69,9 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="Longitude"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.Longitude && errors.Longitude && (
+            <div>{errors.Longitude}</div>
+          )}
         </div>
       </div>
 
@@ -81,6 +87,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             name="file"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.file && errors.file && <div>{errors.file}</div>}
         </div>
       </div>
       <div className="md:flex md:items-center mb-6">
@@ -91,10 +98,15 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
         </div>
         <div className="md:w-2/3">
           <Field
+            as="textarea"
             type="text"
             name="description"
+            rows="6"
             className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
           />
+          {touched.description && errors.description && (
+            <div>{errors.description}</div>
+          )}
         </div>
       </div>
 
@@ -136,26 +148,45 @@ const MyForm = withFormik<MyFormProps, FormValues>({
   validate: (values: FormValues) => {
     let errors: FormikErrors<FormValues> = {};
     if (!values.placeName) {
-      errors.placeName = 'Required';
-    } else if (!values.placeName) {
-      errors.placeName = 'Invalid placeName address';
+      errors.placeName = 'このフィールドは必須です';
+    } else if (values.placeName.length > 15) {
+      errors.placeName = '１５文字以下で入力してください';
+    }
+    if (!values.description) {
+      errors.description = 'このフィールドは必須です';
+    } else if (values.description.length > 15) {
+      errors.description = '１５文字以下で入力してください';
+    }
+    if (!values.Latitude) {
+      errors.Latitude = 'このフィールドは必須です';
+    } else if (values.Latitude.length > 50) {
+      errors.Latitude = '１５文字以下で入力してください';
+    }
+    if (!values.Longitude) {
+      errors.Longitude = 'このフィールドは必須です';
+    } else if (values.Longitude.length > 50) {
+      errors.Longitude = '１５文字以下で入力してください';
     }
     return errors;
   },
 
   handleSubmit: async (values) => {
-    const time = serverTimestamp();
-    console.log(values.placeName);
-    const usersCollectionRef = collection(db, 'users');
-    const documentRef = await addDoc(usersCollectionRef, {
-      placeName: values.placeName,
-      file: values.file,
-      description: values.description,
-      timestamp: time,
-      Longitude: values.Longitude,
-      Latitude: values.Latitude,
-    });
-    console.log(documentRef);
+    try {
+      const time = serverTimestamp();
+      console.log(values.placeName);
+      const usersCollectionRef = collection(db, 'users');
+      const documentRef = await addDoc(usersCollectionRef, {
+        placeName: values.placeName,
+        file: values.file,
+        description: values.description,
+        timestamp: time,
+        Longitude: values.Longitude,
+        Latitude: values.Latitude,
+      });
+      console.log(documentRef);
+    } catch (error) {
+      console.log('err', error);
+    }
   },
 })(InnerForm);
 
@@ -163,6 +194,8 @@ export const AddFormPage = () => (
   <div>
     <h1>AddFormPage</h1>
     <BaseButton text="マップを見る" routing="/maps" />
-    <MyForm message="地名、名前、説明を記入" />
+    <div className="flex justify-center">
+      <MyForm message="地名、名前、説明を記入" />
+    </div>
   </div>
 );

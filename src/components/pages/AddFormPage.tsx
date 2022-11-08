@@ -185,7 +185,6 @@ const MyForm = withFormik<MyFormProps, FormValues>({
         Latitude: values.Latitude,
       });
       console.log(documentRef);
-      ChangePage();
     } catch (error) {
       console.log('err', error);
     }

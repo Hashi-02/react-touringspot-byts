@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Formik, Field, Form, FormikHelpers, useFormik } from 'formik';
+import { Formik, Field, Form } from 'formik';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import * as Yup from 'yup';
@@ -27,6 +27,7 @@ const handleSubmit = async (values: Values) => {
   } catch (error) {
     console.log('err', error);
   }
+  console.log('err');
 };
 
 const validationSchema = Yup.object({

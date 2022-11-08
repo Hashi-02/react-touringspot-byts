@@ -1,9 +1,9 @@
 import { BaseButton } from '../atoms/button/BaseButton';
 import React from 'react';
-import * as Yup from 'yup';
 import { withFormik, FormikProps, FormikErrors, Form, Field } from 'formik';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { useNavigate } from 'react-router-dom';
 
 // Shape of form values
 interface FormValues {
@@ -160,34 +160,35 @@ const MyForm = withFormik<MyFormProps, FormValues>({
     }
     if (!values.Latitude) {
       errors.Latitude = 'このフィールドは必須です';
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.Latitude)
-    ) {
-      errors.Latitude = '正しいメールアドレスを入力してください';
+    } else if (values.Latitude.length > 50) {
+      errors.Latitude = '１５文字以下で入力してください';
     }
     if (!values.Longitude) {
       errors.Longitude = 'このフィールドは必須です';
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.Longitude)
-    ) {
-      errors.Longitude = '正しいメールアドレスを入力してください';
+    } else if (values.Longitude.length > 50) {
+      errors.Longitude = '１５文字以下で入力してください';
     }
     return errors;
   },
 
   handleSubmit: async (values) => {
-    const time = serverTimestamp();
-    console.log(values.placeName);
-    const usersCollectionRef = collection(db, 'users');
-    const documentRef = await addDoc(usersCollectionRef, {
-      placeName: values.placeName,
-      file: values.file,
-      description: values.description,
-      timestamp: time,
-      Longitude: values.Longitude,
-      Latitude: values.Latitude,
-    });
-    console.log(documentRef);
+    try {
+      const time = serverTimestamp();
+      console.log(values.placeName);
+      const usersCollectionRef = collection(db, 'users');
+      const documentRef = await addDoc(usersCollectionRef, {
+        placeName: values.placeName,
+        file: values.file,
+        description: values.description,
+        timestamp: time,
+        Longitude: values.Longitude,
+        Latitude: values.Latitude,
+      });
+      console.log(documentRef);
+      ChangePage();
+    } catch (error) {
+      console.log('err', error);
+    }
   },
 })(InnerForm);
 

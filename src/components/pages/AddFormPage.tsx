@@ -3,7 +3,6 @@ import React from 'react';
 import { withFormik, FormikProps, FormikErrors, Form, Field } from 'formik';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { useNavigate } from 'react-router-dom';
 
 // Shape of form values
 interface FormValues {

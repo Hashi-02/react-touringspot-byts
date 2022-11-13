@@ -41,6 +41,7 @@ const SampleMap = () => {
     Longitude: string;
   };
   const [users, setUsers] = useState<User[]>([]);
+
   useEffect(() => {
     const usersCollectionRef = collection(db, 'users');
     getDocs(usersCollectionRef).then((querySnapshot) => {
@@ -67,43 +68,39 @@ const SampleMap = () => {
   const navigateDetail = (): void => {
     navigate('/maps/detailid');
   };
-  const items = [
-    {
-      lat: 35.39,
-      lng: 138.44,
-    },
-    {
-      lat: 37.39,
-      lng: 139.44,
-    },
-    {
-      lat: 36.39,
-      lng: 140.44,
-    },
-  ];
   const src =
     'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg';
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     const contentString =
       '<button id="infoWindow">' +
-      '<img src=" ' +
-      src +
-      '" width="200"></img>' +
       '<h1 id="title">' +
       users[0].placeName +
       '</h1>' +
       '<p id="description">aaa</p>' +
       '</button>';
-    const infowindow = new maps.InfoWindow({
-      content: contentString,
-      maxWidth: 250,
-    });
 
-    items.forEach((item) => {
+    users.forEach((element) => {
+      const contentString =
+        '<button id="infoWindow">' +
+        '<img src=" ' +
+        src +
+        '" width="200"></img>' +
+        '<h1 id="title">' +
+        element.placeName +
+        '</h1>' +
+        '<p id="description">' +
+        element.description +
+        '</p>' +
+        '</button>';
+      const infowindow = new maps.InfoWindow({
+        content: contentString,
+        maxWidth: 250,
+      });
+
       const marker = new maps.Marker({
         position: {
-          lat: item.lat,
-          lng: item.lng,
+          lat: parseFloat(element.Latitude),
+          lng: parseFloat(element.Longitude),
         },
         map,
       });
@@ -114,7 +111,6 @@ const SampleMap = () => {
           shouldFocus: false,
         });
       });
-
       infowindow.addListener('domready', () => {
         document.getElementById('infoWindow')!.addEventListener('click', () => {
           navigateDetail();

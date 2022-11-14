@@ -71,6 +71,7 @@ const SampleMap = () => {
   const src =
     'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg';
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
+    let currentInfoWindow: { close: () => void } | null = null;
     const contentString =
       '<button id="infoWindow">' +
       '<h1 id="title">' +
@@ -110,6 +111,10 @@ const SampleMap = () => {
           map,
           shouldFocus: false,
         });
+        if (currentInfoWindow) {
+          currentInfoWindow.close();
+        }
+        currentInfoWindow = infowindow;
       });
       infowindow.addListener('domready', () => {
         document.getElementById('infoWindow')!.addEventListener('click', () => {

@@ -28,7 +28,6 @@ const handleSubmit = async (values: Values) => {
   } catch (error) {
     console.log('err', error);
   }
-  console.log('err');
 };
 
 const validationSchema = Yup.object({

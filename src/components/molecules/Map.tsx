@@ -41,6 +41,7 @@ const SampleMap = () => {
     Longitude: string;
   };
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const usersCollectionRef = collection(db, 'users');
@@ -61,6 +62,8 @@ const SampleMap = () => {
         }
       });
       setUsers(userList);
+      setLoading(true);
+      console.log(userList);
     });
   }, []);
   const mapProps = initialMapProps;
@@ -72,13 +75,13 @@ const SampleMap = () => {
     'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg';
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     let currentInfoWindow: { close: () => void } | null = null;
-    const contentString =
-      '<button id="infoWindow">' +
-      '<h1 id="title">' +
-      users[0].placeName +
-      '</h1>' +
-      '<p id="description">aaa</p>' +
-      '</button>';
+    // const contentString =
+    //   '<button id="infoWindow">' +
+    //   '<h1 id="title">' +
+    //   users[0].placeName +
+    //   '</h1>' +
+    //   '<p id="description">aaa</p>' +
+    //   '</button>';
 
     users.forEach((element) => {
       const contentString =
@@ -125,14 +128,20 @@ const SampleMap = () => {
   };
 
   return (
-    <>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: API_KEY }}
-        center={mapProps.center}
-        zoom={mapProps.zoom}
-        onGoogleApiLoaded={handleApiLoaded}
-      />
-    </>
+    <div>
+      {loading ? (
+        <>
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: API_KEY }}
+            center={mapProps.center}
+            zoom={mapProps.zoom}
+            onGoogleApiLoaded={handleApiLoaded}
+          />
+        </>
+      ) : (
+        <p>loading</p>
+      )}
+    </div>
   );
 };
 

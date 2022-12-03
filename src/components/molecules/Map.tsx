@@ -126,6 +126,7 @@ const SampleMap = () => {
           center={mapProps.center}
           zoom={mapProps.zoom}
           onGoogleApiLoaded={handleApiLoaded}
+          yesIWantToUseGoogleMapApiInternals={true}
         />
       )}
     </>

@@ -1,11 +1,14 @@
 import React from 'react';
 import { BaseButton } from '../atoms/button/BaseButton';
+import { ImageUploader } from '../molecules/ImageUploader';
 
 export const DetailPage = () => {
   return (
     <>
       <BaseButton text="マップに戻る" routing="/maps" />
-      <h1>DetailPage</h1>
+      <div className="container">
+        <ImageUploader />
+      </div>
     </>
   );
 };

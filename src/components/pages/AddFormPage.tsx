@@ -4,6 +4,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import * as Yup from 'yup';
 import { BaseButton } from '../atoms/button/BaseButton';
+import { Navigate, useNavigate } from 'react-router-dom';
 interface Values {
   placeName: string;
   file: string;
@@ -11,24 +12,6 @@ interface Values {
   Latitude: string;
   Longitude: string;
 }
-const handleSubmit = async (values: Values) => {
-  try {
-    const time = serverTimestamp();
-    console.log(values.placeName);
-    const usersCollectionRef = collection(db, 'users');
-    const documentRef = await addDoc(usersCollectionRef, {
-      placeName: values.placeName,
-      file: values.file,
-      description: values.description,
-      timestamp: time,
-      Longitude: values.Longitude,
-      Latitude: values.Latitude,
-    });
-    console.log(documentRef);
-  } catch (error) {
-    console.log('err', error);
-  }
-};
 
 const validationSchema = Yup.object({
   placeName: Yup.string()
@@ -46,6 +29,28 @@ const validationSchema = Yup.object({
 });
 
 export const AddFormPage = () => {
+  const navigate = useNavigate();
+  const handleSubmit = async (values: Values) => {
+    try {
+      const time = serverTimestamp();
+      console.log(values.placeName);
+      const usersCollectionRef = collection(db, 'users');
+      const documentRef = await addDoc(usersCollectionRef, {
+        placeName: values.placeName,
+        file: values.file,
+        description: values.description,
+        timestamp: time,
+        Longitude: values.Longitude,
+        Latitude: values.Latitude,
+      }).then(() => {
+        navigate('/maps');
+      });
+      console.log(documentRef);
+    } catch (error) {
+      console.log('err', error);
+    }
+  };
+
   const initialValues: Values = {
     placeName: '',
     file: '',
@@ -120,21 +125,6 @@ export const AddFormPage = () => {
                     {formik.touched.Longitude && formik.errors.Longitude ? (
                       <div>{formik.errors.Longitude}</div>
                     ) : null}
-                  </div>
-                </div>
-
-                <div className="md:flex md:items-center mb-6">
-                  <div className="md:w-1/3">
-                    <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
-                      ファイル
-                    </label>
-                  </div>
-                  <div className="md:w-2/3">
-                    <Field
-                      type="text"
-                      name="file"
-                      className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                    />
                   </div>
                 </div>
                 <div className="md:flex md:items-center mb-6">

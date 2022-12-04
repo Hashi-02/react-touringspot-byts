@@ -64,7 +64,6 @@ const SampleMap = () => {
         }
       });
       setUsers(userList);
-      console.log(userList);
     });
   }, []);
   const mapProps = initialMapProps;

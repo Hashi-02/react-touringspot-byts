@@ -40,6 +40,7 @@ const SampleMap = () => {
     description: string;
     Latitude: string;
     Longitude: string;
+    id: string;
   };
   const [users, setUsers] = useState<User[]>([]);
 
@@ -56,18 +57,20 @@ const SampleMap = () => {
             description: doc.data().description,
             Latitude: doc.data().Latitude,
             Longitude: doc.data().Longitude,
+            id: doc.id,
           };
           userList.push(user);
           count += 1;
         }
       });
       setUsers(userList);
+      console.log(userList);
     });
   }, []);
   const mapProps = initialMapProps;
   const navigate = useNavigate();
-  const navigateDetail = (): void => {
-    navigate('/maps/detailid');
+  const navigateDetail = (id: string): void => {
+    navigate('/maps/detail/' + id);
   };
   const src =
     'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg';
@@ -85,6 +88,7 @@ const SampleMap = () => {
         '</h1>' +
         '<p id="description">' +
         element.description +
+        element.id +
         '</p>' +
         '</button>';
       const infowindow = new maps.InfoWindow({
@@ -112,7 +116,8 @@ const SampleMap = () => {
       });
       infowindow.addListener('domready', () => {
         document.getElementById('infoWindow')!.addEventListener('click', () => {
-          navigateDetail();
+          navigateDetail(element.id);
+          console.log(element.id);
         });
       });
     });

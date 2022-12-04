@@ -11,6 +11,7 @@ export const LeftList: React.FC = () => {
     description: string;
     Latitude: string;
     Longitude: string;
+    id: string;
   };
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
@@ -26,6 +27,7 @@ export const LeftList: React.FC = () => {
             description: doc.data().description,
             Latitude: doc.data().Latitude,
             Longitude: doc.data().Longitude,
+            id: doc.id,
           };
           userList.push(user);
           count += 1;
@@ -42,7 +44,7 @@ export const LeftList: React.FC = () => {
       {users.map((user, index) => (
         <div key={index.toString()}>
           <Card
-            routing="/maps/detailid"
+            routing={'/maps/detail/' + user.id}
             imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
             title={user.placeName}
             description={user.description}

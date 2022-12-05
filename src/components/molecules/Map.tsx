@@ -28,7 +28,7 @@ const initialMapProps: MapProps = {
 /**
  * APIキー
  */
-const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY; // TODO: 自分のキーをここに入力
+const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY;
 
 /**
  * サンプルとして地図を表示するコンポーネント

@@ -12,7 +12,7 @@ export const MapPage = () => {
         <div className="flex-1 relative">
           <MapComponent />
           <div className="absolute top-3 right-20">
-            <BaseButton text="スポットを追加する" routing="/add" />
+            <BaseButton text="スポットを追加する" routing="/selectspot" />
           </div>
         </div>
       </div>

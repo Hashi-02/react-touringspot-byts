@@ -1,5 +1,7 @@
 import GoogleMapReact from 'google-map-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { BaseButton } from '../atoms/button/BaseButton';
 interface MapProps {
   center: {
     lat: number;
@@ -25,7 +27,7 @@ type Spots = {
 
 const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY;
 
-export const Test = () => {
+export const SelectSpot = () => {
   const [text, setText] = useState<String>('');
   const [map, setMap] = useState(null);
   const [maps, setMaps] = useState(null);
@@ -75,12 +77,29 @@ export const Test = () => {
 
   return (
     <>
-      {/* テキストボックス有りver */}
-      <div>
-        <input type="text" onChange={(e) => setText(e.target.value)} />
-        <button type="button" onClick={search}>
-          Search
-        </button>
+      <BaseButton text="マップを見る" routing="/maps" />
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/3">
+          <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4">
+            地名
+          </label>
+        </div>
+        <div className="md:w-1/3">
+          <input
+            type="text"
+            onChange={(e) => setText(e.target.value)}
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+          />
+        </div>
+        <div className="m-1">
+          <button
+            type="button"
+            onClick={search}
+            className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+          >
+            Search
+          </button>
+        </div>
       </div>
 
       <div id="map" style={{ height: '0px', width: '0px' }}>
@@ -94,13 +113,36 @@ export const Test = () => {
       </div>
 
       {spotResults && (
-        <div>
+        <div className="grid grid-cols-4 gap-4">
           {spotResults.map((spots, index) => (
             <div key={index}>
-              <p>{spots.name}</p>
-              <p>{spots.formatted_address}</p>
-              <p>{spots.Latitude}</p>
-              <p>{spots.Longitude}</p>
+              <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
+                <a href="#">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    {spots.name}
+                  </h5>
+                </a>
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  {spots.formatted_address}
+                  {/* {spots.Longitude}
+                  {spots.Latitude} */}
+                </p>
+
+                <div>
+                  <button className="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    <Link
+                      to="/add"
+                      state={{
+                        name: spots.name,
+                        lat: spots.Latitude,
+                        lng: spots.Longitude,
+                      }}
+                    >
+                      追加する
+                    </Link>
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>

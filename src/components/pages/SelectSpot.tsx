@@ -111,42 +111,42 @@ export const SelectSpot = () => {
           yesIWantToUseGoogleMapApiInternals={true}
         />
       </div>
-
-      {spotResults && (
-        <div className="grid grid-cols-4 gap-4">
-          {spotResults.map((spots, index) => (
-            <div key={index}>
-              <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+      <div className="flex justify-center">
+        {spotResults && (
+          <div className="grid grid-cols-3 gap-3 my-5">
+            {spotResults.map((spots, index) => (
+              <div key={index}>
+                <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-md ">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 ">
                     {spots.name}
                   </h5>
-                </a>
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  {spots.formatted_address}
-                  {/* {spots.Longitude}
-                  {spots.Latitude} */}
-                </p>
 
-                <div>
-                  <button className="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                    <Link
-                      to="/add"
-                      state={{
-                        name: spots.name,
-                        lat: spots.Latitude,
-                        lng: spots.Longitude,
-                      }}
-                    >
-                      追加する
-                    </Link>
-                  </button>
+                  <p className="mb-3 font-normal text-gray-700 ">
+                    {spots.formatted_address}
+                    {/* {spots.Longitude}
+                  {spots.Latitude} */}
+                  </p>
+
+                  <div>
+                    <button className="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                      <Link
+                        to="/add"
+                        state={{
+                          name: spots.name,
+                          lat: spots.Latitude,
+                          lng: spots.Longitude,
+                        }}
+                      >
+                        追加する
+                      </Link>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </>
   );
 };

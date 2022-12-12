@@ -5,6 +5,7 @@ import { db } from '../../firebase';
 import * as Yup from 'yup';
 import { BaseButton } from '../atoms/button/BaseButton';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 interface Values {
   placeName: string;
   file: string;
@@ -29,6 +30,8 @@ const validationSchema = Yup.object({
 });
 
 export const AddFormPage = () => {
+  const location = useLocation();
+  const { name, lat, lng } = location.state;
   const navigate = useNavigate();
   const handleSubmit = async (values: Values) => {
     try {
@@ -52,16 +55,21 @@ export const AddFormPage = () => {
   };
 
   const initialValues: Values = {
-    placeName: '',
+    placeName: name,
     file: '',
     description: '',
-    Latitude: '',
-    Longitude: '',
+    Latitude: lat,
+    Longitude: lng,
   };
 
   return (
     <div>
       <h1>AddFormPage</h1>
+      {/* <p>
+        {name}
+        {lat}
+        {lng}
+      </p> */}
       <BaseButton text="マップを見る" routing="/maps" />
       <div className="flex justify-center">
         <Formik

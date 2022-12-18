@@ -1,4 +1,3 @@
-import { isEmpty } from '@firebase/util';
 import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 import React, { useEffect, useState, VFC } from 'react';
 type Props = {
@@ -25,7 +24,7 @@ export const ImageLoader: VFC<Props> = (props) => {
                   srcUrl: url,
                 };
                 ImagesList.push(image);
-                if (ImagesList.length == res.items.length) {
+                if (ImagesList.length === res.items.length) {
                   setImages(ImagesList);
                 }
               })
@@ -50,24 +49,6 @@ export const ImageLoader: VFC<Props> = (props) => {
                 }
               });
           });
-
-          // const ImagesList: TImages[] = [];
-          // res.items.map((doc, index) => {
-          //   const starsRef = ref(storage, `${doc.fullPath}`);
-          //   getDownloadURL(starsRef).then((url) => {
-          //     console.log(url);
-          //     const image: TImages = {
-          //       srcUrl: url,
-          //     };
-          //     ImagesList.push(image);
-          //   });
-          // });
-          // setImages(ImagesList);
-          // console.log(ImagesList);
-          // console.log(Images);
-          // console.log(isEmpty(Images));
-          // // console.log(ImagesList[0].srcUrl);
-          // console.log(Images[0].srcUrl);
         })
         .catch((error) => {
           console.log(error);
@@ -76,18 +57,14 @@ export const ImageLoader: VFC<Props> = (props) => {
       console.log('error-0');
     }
   }, []);
-  console.log(Images);
   return (
     <>
-      {isEmpty(Images) && <p>Imagesは空っぽです</p>}
-      {!isEmpty(Images) && <p>Imagesに何かある</p>}
       {/* {Images && <p>{Images[0].srcUrl}</p>} */}
       {Images.map((img, index) => {
-        console.log(img);
         return (
           <div key={index}>
             {/* <p>{img.srcUrl}</p> */}
-            <img src={img.srcUrl} />
+            <img src={img.srcUrl} alt="images" />
           </div>
         );
       })}

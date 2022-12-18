@@ -32,7 +32,7 @@ export const ImageUploader: VFC<Props> = (id) => {
         console.log('アップロード処理');
 
         // const storageRef = storage.ref('images/test/'); //どのフォルダの配下に入れるかを設定
-        const storageRef = ref(storage, `${id.id}` + values.file.name);
+        const storageRef = ref(storage, `${id.id}/` + values.file.name);
         // const imagesRef = storageRef.child(image.name); //ファイル名
         const uploadTask = uploadBytesResumable(
           storageRef,

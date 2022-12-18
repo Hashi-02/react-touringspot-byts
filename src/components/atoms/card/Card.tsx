@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { ImageLoaderCard } from '../../molecules/ImageLoaderCard';
 type Props = {
   routing: string;
   imgSrc: string;
   title: string;
   description: string;
+  id: string;
 };
 
 export const Card = (props: Props) => {
@@ -13,11 +15,7 @@ export const Card = (props: Props) => {
       <Link to={props.routing}>
         <button className="w-full">
           <div className="flex flex-row rounded-lg shadow-xl lg:flex  p-2">
-            <img
-              className="object-cover w-full lg:w-40 lg:h-40 rounded-lg mr-3"
-              src={props.imgSrc}
-              alt=""
-            />
+            <ImageLoaderCard id={props.id} />
             <div className="flex flex-col  mx-auto">
               <h4 className="text-xl text-center font-semibold tracking-tight text-purple-600">
                 {props.title}

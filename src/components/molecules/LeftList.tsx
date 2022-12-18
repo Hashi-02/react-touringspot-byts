@@ -48,6 +48,7 @@ export const LeftList: React.FC = () => {
             imgSrc="https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg"
             title={user.placeName}
             description={user.description}
+            id={user.id}
           />
         </div>
       ))}

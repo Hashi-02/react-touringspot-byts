@@ -1,9 +1,22 @@
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { Formik } from 'formik';
-import { FC } from 'react';
+import { FC, useState, VFC } from 'react';
 import * as yup from 'yup';
+import { storage } from '../../firebase';
 import { Thumb } from './Thumb';
 
-export const ImageUploader: FC = () => {
+type Props = {
+  id: string;
+};
+
+export const ImageUploader: VFC<Props> = (id) => {
+  const metadata = {
+    contentType: 'image/jpeg',
+  };
+  const [image, setImage] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [error, setError] = useState('');
+  const [progress, setProgress] = useState(100);
   return (
     <Formik
       initialValues={{ file: null }}
@@ -14,6 +27,44 @@ export const ImageUploader: FC = () => {
             type: values.file.type,
             size: `${values.file.size} bytes`,
           })
+        );
+        // アップロード処理
+        console.log('アップロード処理');
+
+        // const storageRef = storage.ref('images/test/'); //どのフォルダの配下に入れるかを設定
+        const storageRef = ref(storage, `${id.id}/` + values.file.name);
+        // const imagesRef = storageRef.child(image.name); //ファイル名
+        const uploadTask = uploadBytesResumable(
+          storageRef,
+          values.file,
+          metadata
+        );
+
+        console.log('ファイルをアップする行為');
+        // const upLoadTask = imagesRef.put(image);
+        console.log('タスク実行前');
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            console.log('snapshot', snapshot);
+            const percent =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(percent + '% done');
+            setProgress(percent);
+          },
+          (error) => {
+            console.log('err', error);
+            setError('ファイルアップに失敗しました。' + error);
+            setProgress(100); //実行中のバーを消す
+          },
+          () => {
+            // Upload completed successfully, now we can get the download URL
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              console.log('File available at', downloadURL);
+              setImageUrl(downloadURL);
+            });
+          }
         );
       }}
       validationSchema={yup.object().shape({
@@ -69,6 +120,8 @@ export const ImageUploader: FC = () => {
               >
                 Submit
               </button>
+              {error && <div>{error}</div>}
+              {progress !== 100 && <LinearProgressWithLabel value={progress} />}
             </div>
             <Thumb file={values.file} />
           </form>
@@ -77,3 +130,24 @@ export const ImageUploader: FC = () => {
     </Formik>
   );
 };
+
+function LinearProgressWithLabel(props: any) {
+  return (
+    <>
+      <div className="flex justify-between mb-1">
+        <span className="text-base font-medium text-blue-700 dark:text-white">
+          Flowbite
+        </span>
+        <span className="text-sm font-medium text-blue-700 dark:text-white">
+          {`${Math.round(props.value)}%`}
+        </span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div
+          className="bg-blue-600 h-2.5 rounded-full"
+          // st="width: 45%"
+        ></div>
+      </div>
+    </>
+  );
+}

@@ -50,7 +50,6 @@ export const SelectSpot = () => {
         service.textSearch(request, (results: any, status: any) => {
           // @ts-ignore
           if (status === maps.places.PlacesServiceStatus.OK && results) {
-            console.log(results);
             const resultList: Spots[] = [];
             let count: number = 0;
             results.map((element: any, index: any) => {
@@ -67,8 +66,6 @@ export const SelectSpot = () => {
               }
             });
             setSpotResults(resultList);
-          } else {
-            console.log('あ');
           }
         });
       }

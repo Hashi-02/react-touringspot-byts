@@ -10,7 +10,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="maps" element={<MapPage />} />
-      <Route path={'maps/detail/:id'} element={<DetailPage />} />
+      <Route path={'maps/detail/:uid'} element={<DetailPage />} />
       <Route path="add" element={<AddFormPage />} />
       <Route path="selectspot" element={<SelectSpot />} />
     </Routes>

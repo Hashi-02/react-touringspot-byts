@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { isEmpty } from '@firebase/util';
+import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 
 /**
  * Mapに使用するプロパティ
@@ -42,6 +43,9 @@ const SampleMap = () => {
     Longitude: string;
     id: string;
   };
+  type TImages = {
+    srcUrl: string;
+  };
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
@@ -71,54 +75,99 @@ const SampleMap = () => {
   const navigateDetail = (id: string): void => {
     navigate('/maps/detail/' + id);
   };
-  const src =
-    'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg';
+
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     let currentInfoWindow: { close: () => void } | null = null;
 
     users.forEach((element) => {
-      const contentString =
-        '<button id="infoWindow">' +
-        '<img src=" ' +
-        src +
-        '" width="200"></img>' +
-        '<h1 id="title">' +
-        element.placeName +
-        '</h1>' +
-        '<p id="description">' +
-        element.description +
-        element.id +
-        '</p>' +
-        '</button>';
-      const infowindow = new maps.InfoWindow({
-        content: contentString,
-        maxWidth: 250,
-      });
+      const storage = getStorage();
+      const ImagesList: TImages[] = [];
+      if (element.id) {
+        const listRef = ref(storage, `${element.id}`);
+        listAll(listRef)
+          .then((res) => {
+            res.items.forEach((itemRef) => {
+              const starsRef = ref(storage, `${itemRef.fullPath}`);
+              getDownloadURL(starsRef)
+                .then((url) => {
+                  const image: TImages = {
+                    srcUrl: url,
+                  };
+                  ImagesList.push(image);
+                  if (ImagesList.length === res.items.length) {
+                    const contentString =
+                      '<button id="infoWindow">' +
+                      '<img src=" ' +
+                      ImagesList[0].srcUrl +
+                      '" width="200"></img>' +
+                      '<h1 id="title">' +
+                      element.placeName +
+                      '</h1>' +
+                      '<p id="description">' +
+                      element.description +
+                      '</p>' +
+                      '</button>';
 
-      const marker = new maps.Marker({
-        position: {
-          lat: parseFloat(element.Latitude),
-          lng: parseFloat(element.Longitude),
-        },
-        map,
-      });
-      marker.addListener('click', () => {
-        infowindow.open({
-          anchor: marker,
-          map,
-          shouldFocus: false,
-        });
-        if (currentInfoWindow) {
-          currentInfoWindow.close();
-        }
-        currentInfoWindow = infowindow;
-      });
-      infowindow.addListener('domready', () => {
-        document.getElementById('infoWindow')!.addEventListener('click', () => {
-          navigateDetail(element.id);
-          console.log(element.id);
-        });
-      });
+                    const infowindow = new maps.InfoWindow({
+                      content: contentString,
+                      maxWidth: 250,
+                    });
+
+                    const marker = new maps.Marker({
+                      position: {
+                        lat: parseFloat(element.Latitude),
+                        lng: parseFloat(element.Longitude),
+                      },
+                      map,
+                    });
+                    marker.addListener('click', () => {
+                      infowindow.open({
+                        anchor: marker,
+                        map,
+                        shouldFocus: false,
+                      });
+                      if (currentInfoWindow) {
+                        currentInfoWindow.close();
+                      }
+                      currentInfoWindow = infowindow;
+                    });
+                    infowindow.addListener('domready', () => {
+                      document
+                        .getElementById('infoWindow')!
+                        .addEventListener('click', () => {
+                          navigateDetail(element.id);
+                        });
+                    });
+                  }
+                })
+                .catch((error) => {
+                  switch (error.code) {
+                    case 'storage/object-not-found':
+                      console.log("File doesn't exist");
+                      break;
+                    case 'storage/unauthorized':
+                      console.log(
+                        "User doesn't have permission to access the object"
+                      );
+                      break;
+                    case 'storage/canceled':
+                      console.log('User canceled the upload');
+                      break;
+                    case 'storage/unknown':
+                      console.log(
+                        ' Unknown error occurred, inspect the server response'
+                      );
+                      break;
+                  }
+                });
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.log('error-0');
+      }
     });
   };
 

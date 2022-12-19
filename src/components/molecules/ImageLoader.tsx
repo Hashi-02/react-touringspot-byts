@@ -64,7 +64,7 @@ export const ImageLoader: VFC<Props> = (props) => {
         return (
           <div key={index}>
             {/* <p>{img.srcUrl}</p> */}
-            <img src={img.srcUrl} alt="images" />
+            <img src={img.srcUrl} alt="images" className="rounded-lg h-96" />
           </div>
         );
       })}

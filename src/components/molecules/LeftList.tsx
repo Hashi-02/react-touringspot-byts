@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from '../atoms/card/Card';
+import { Card } from './card/Card';
 import { BaseButton } from '../atoms/button/BaseButton';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+//moleculesからのインポートをなくす
 import { ImageLoaderCard } from '../../molecules/ImageLoaderCard';
 type Props = {
   routing: string;

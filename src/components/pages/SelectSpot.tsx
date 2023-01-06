@@ -120,8 +120,6 @@ export const SelectSpot = () => {
 
                   <p className="mb-3 font-normal text-gray-700 ">
                     {spots.formatted_address}
-                    {/* {spots.Longitude}
-                  {spots.Latitude} */}
                   </p>
 
                   <div>

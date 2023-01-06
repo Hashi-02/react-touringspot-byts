@@ -6,10 +6,12 @@ type Props = {
 };
 
 export const ImageLoaderCard: VFC<Props> = (props) => {
+  //TImagesの名前を変える
   type TImages = {
     srcUrl: string;
   };
   const [Images, setImages] = useState<TImages[]>([]);
+  //使いまわせそう
   useEffect(() => {
     const storage = getStorage();
     if (props.id) {

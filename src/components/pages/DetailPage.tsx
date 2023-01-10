@@ -8,7 +8,7 @@ import { ImageUploader } from '../molecules/ImageUploader';
 
 export const DetailPage = () => {
   let { uid } = useParams();
-  type TdetailInfo = {
+  type TypeDetailInfo = {
     placeName: string;
     file: string;
     description: string;
@@ -16,7 +16,7 @@ export const DetailPage = () => {
     Longitude: string;
     id: string;
   };
-  const [detailInfo, setDetailInfo] = useState<TdetailInfo>();
+  const [detailInfo, setDetailInfo] = useState<TypeDetailInfo>();
   useEffect(() => {
     const id = uid;
     if (id) {
@@ -24,7 +24,7 @@ export const DetailPage = () => {
       const userDocumentRef = doc(db, 'users', id);
       getDoc(userDocumentRef).then((documentSnapshot) => {
         if (documentSnapshot.exists()) {
-          const Info: TdetailInfo = {
+          const Info: TypeDetailInfo = {
             placeName: documentSnapshot.data().placeName,
             file: documentSnapshot.data().file,
             description: documentSnapshot.data().description,

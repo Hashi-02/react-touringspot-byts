@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import './styles.css';
+import '../../styles.css';
 
 // import required modules
 import { Navigation } from 'swiper';
@@ -16,10 +16,10 @@ type Props = {
 
 export const ImageLoader: VFC<Props> = (props) => {
   //TImagesの名前を変える
-  type TImages = {
+  type TypeImages = {
     srcUrl: string;
   };
-  const [Images, setImages] = useState<TImages[]>([]);
+  const [Images, setImages] = useState<TypeImages[]>([]);
   //使いまわせそう
   useEffect(() => {
     //storageからdocumentIDで写真を取得
@@ -28,12 +28,12 @@ export const ImageLoader: VFC<Props> = (props) => {
       const listRef = ref(storage, `${props.id}`);
       listAll(listRef)
         .then((res) => {
-          const ImagesList: TImages[] = [];
+          const ImagesList: TypeImages[] = [];
           res.items.forEach((itemRef) => {
             const starsRef = ref(storage, `${itemRef.fullPath}`);
             getDownloadURL(starsRef)
               .then((url) => {
-                const image: TImages = {
+                const image: TypeImages = {
                   srcUrl: url,
                 };
                 ImagesList.push(image);

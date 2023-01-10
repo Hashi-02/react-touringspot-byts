@@ -21,7 +21,7 @@ export const DetailPage = () => {
     const id = uid;
     if (id) {
       //usersの名前を変える
-      const userDocumentRef = doc(db, 'users', id);
+      const userDocumentRef = doc(db, 'spots', id);
       getDoc(userDocumentRef).then((documentSnapshot) => {
         if (documentSnapshot.exists()) {
           const Info: TypeDetailInfo = {

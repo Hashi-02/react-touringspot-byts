@@ -4,7 +4,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import * as Yup from 'yup';
 import { BaseButton } from '../atoms/button/BaseButton';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 interface Values {
   placeName: string;
@@ -37,8 +37,8 @@ export const AddFormPage = () => {
     try {
       const time = serverTimestamp();
       console.log(values.placeName);
-      const usersCollectionRef = collection(db, 'users');
-      const documentRef = await addDoc(usersCollectionRef, {
+      const spotsCollectionRef = collection(db, 'spots');
+      const documentRef = await addDoc(spotsCollectionRef, {
         placeName: values.placeName,
         file: values.file,
         description: values.description,

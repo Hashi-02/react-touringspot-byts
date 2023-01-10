@@ -34,7 +34,7 @@ const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY;
 /**
  * サンプルとして地図を表示するコンポーネント
  */
-const SampleMap = () => {
+const MainMap = () => {
   type User = {
     placeName: string;
     file: string;
@@ -46,11 +46,11 @@ const SampleMap = () => {
   type TImages = {
     srcUrl: string;
   };
-  const [users, setUsers] = useState<User[]>([]);
+  const [spots, setSpots] = useState<User[]>([]);
 
   useEffect(() => {
-    const usersCollectionRef = collection(db, 'users');
-    getDocs(usersCollectionRef).then((querySnapshot) => {
+    const spotsCollectionRef = collection(db, 'spots');
+    getDocs(spotsCollectionRef).then((querySnapshot) => {
       const userList: User[] = [];
       let count: number = 0;
       querySnapshot.docs.map((doc, index) => {
@@ -67,7 +67,7 @@ const SampleMap = () => {
           count += 1;
         }
       });
-      setUsers(userList);
+      setSpots(userList);
     });
   }, []);
   const mapProps = initialMapProps;
@@ -79,7 +79,7 @@ const SampleMap = () => {
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     let currentInfoWindow: { close: () => void } | null = null;
 
-    users.forEach((element) => {
+    spots.forEach((element) => {
       const storage = getStorage();
       const ImagesList: TImages[] = [];
       if (element.id) {
@@ -173,7 +173,7 @@ const SampleMap = () => {
 
   return (
     <>
-      {!isEmpty(users) && (
+      {!isEmpty(spots) && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: API_KEY }}
           center={mapProps.center}
@@ -186,4 +186,4 @@ const SampleMap = () => {
   );
 };
 
-export default SampleMap;
+export default MainMap;

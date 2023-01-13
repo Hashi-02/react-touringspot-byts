@@ -43,11 +43,11 @@ const MainMap = () => {
     Longitude: string;
     id: string;
   };
-  type TImages = {
+  type TypeImages = {
     srcUrl: string;
   };
   const [spots, setSpots] = useState<User[]>([]);
-
+  const [Images, setImages] = useState<TypeImages[]>([]);
   useEffect(() => {
     const spotsCollectionRef = collection(db, 'spots');
     getDocs(spotsCollectionRef).then((querySnapshot) => {
@@ -81,64 +81,127 @@ const MainMap = () => {
 
     spots.forEach((element) => {
       const storage = getStorage();
-      const ImagesList: TImages[] = [];
+      const ImagesList: TypeImages[] = [];
       if (element.id) {
         const listRef = ref(storage, `${element.id}`);
+        console.log(spots.length);
+        console.log(listRef);
         listAll(listRef)
           .then((res) => {
+            console.log(res.items.length);
+            console.log(res);
+            if (res.items.length === 0) {
+              const image: TypeImages = {
+                srcUrl:
+                  'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg',
+              };
+              ImagesList.push(image);
+              setImages(ImagesList);
+              const contentString =
+                '<button id="infoWindow">' +
+                '<img src=" ' +
+                ImagesList[0].srcUrl +
+                '" width="200"></img>' +
+                '<h1 id="title">' +
+                element.placeName +
+                '</h1>' +
+                '<p id="description">' +
+                element.description +
+                '</p>' +
+                '</button>';
+
+              const infowindow = new maps.InfoWindow({
+                content: contentString,
+                maxWidth: 250,
+              });
+
+              const marker = new maps.Marker({
+                position: {
+                  lat: parseFloat(element.Latitude),
+                  lng: parseFloat(element.Longitude),
+                },
+                map,
+              });
+              marker.addListener('click', () => {
+                infowindow.open({
+                  anchor: marker,
+                  map,
+                  shouldFocus: false,
+                });
+                if (currentInfoWindow) {
+                  currentInfoWindow.close();
+                }
+                currentInfoWindow = infowindow;
+              });
+              infowindow.addListener('domready', () => {
+                document
+                  .getElementById('infoWindow')!
+                  .addEventListener('click', () => {
+                    navigateDetail(element.id);
+                  });
+              });
+            }
             res.items.forEach((itemRef) => {
+              console.log('baba');
               const starsRef = ref(storage, `${itemRef.fullPath}`);
               getDownloadURL(starsRef)
                 .then((url) => {
-                  const image: TImages = {
+                  const image: TypeImages = {
                     srcUrl: url,
                   };
                   ImagesList.push(image);
-                  if (ImagesList.length === res.items.length) {
-                    const contentString =
-                      '<button id="infoWindow">' +
-                      '<img src=" ' +
-                      ImagesList[0].srcUrl +
-                      '" width="200"></img>' +
-                      '<h1 id="title">' +
-                      element.placeName +
-                      '</h1>' +
-                      '<p id="description">' +
-                      element.description +
-                      '</p>' +
-                      '</button>';
+                  console.log('dd');
+                  console.log(url);
+                  console.log(ImagesList.length);
+                  console.log(res.items.length);
+                  console.log('aaaaaaaaa');
+                  // if (ImagesList.length === res.items.length) {
+                  setImages(ImagesList);
+                  // }
+                  const contentString =
+                    '<button id="infoWindow">' +
+                    '<img src=" ' +
+                    ImagesList[0].srcUrl +
+                    '" width="200"></img>' +
+                    '<h1 id="title">' +
+                    element.placeName +
+                    '</h1>' +
+                    '<p id="description">' +
+                    element.description +
+                    '</p>' +
+                    '</button>';
 
-                    const infowindow = new maps.InfoWindow({
-                      content: contentString,
-                      maxWidth: 250,
-                    });
+                  const infowindow = new maps.InfoWindow({
+                    content: contentString,
+                    maxWidth: 250,
+                  });
 
-                    const marker = new maps.Marker({
-                      position: {
-                        lat: parseFloat(element.Latitude),
-                        lng: parseFloat(element.Longitude),
-                      },
+                  const marker = new maps.Marker({
+                    position: {
+                      lat: parseFloat(element.Latitude),
+                      lng: parseFloat(element.Longitude),
+                    },
+                    map,
+                  });
+                  marker.addListener('click', () => {
+                    infowindow.open({
+                      anchor: marker,
                       map,
+                      shouldFocus: false,
                     });
-                    marker.addListener('click', () => {
-                      infowindow.open({
-                        anchor: marker,
-                        map,
-                        shouldFocus: false,
+                    if (currentInfoWindow) {
+                      currentInfoWindow.close();
+                    }
+                    currentInfoWindow = infowindow;
+                  });
+                  infowindow.addListener('domready', () => {
+                    document
+                      .getElementById('infoWindow')!
+                      .addEventListener('click', () => {
+                        navigateDetail(element.id);
                       });
-                      if (currentInfoWindow) {
-                        currentInfoWindow.close();
-                      }
-                      currentInfoWindow = infowindow;
-                    });
-                    infowindow.addListener('domready', () => {
-                      document
-                        .getElementById('infoWindow')!
-                        .addEventListener('click', () => {
-                          navigateDetail(element.id);
-                        });
-                    });
-                  }
+                  });
+                  // }
                 })
                 .catch((error) => {
                   switch (error.code) {
@@ -170,7 +233,7 @@ const MainMap = () => {
       }
     });
   };
-
+  console.log(Images);
   return (
     <>
       {!isEmpty(spots) && (

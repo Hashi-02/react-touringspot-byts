@@ -6,9 +6,6 @@ import { db } from '../../firebase';
 import { isEmpty } from '@firebase/util';
 import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 
-/**
- * Mapに使用するプロパティ
- */
 interface MapProps {
   center: {
     lat: number;
@@ -16,9 +13,7 @@ interface MapProps {
   };
   zoom: number;
 }
-/**
- * MapのPropsの初期値
- */
+
 const initialMapProps: MapProps = {
   center: {
     lat: 35.39,
@@ -26,15 +21,10 @@ const initialMapProps: MapProps = {
   },
   zoom: 8,
 };
-/**
- * APIキー
- */
+
 const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY;
 
-/**
- * サンプルとして地図を表示するコンポーネント
- */
-const SampleMap = () => {
+const MainMap = () => {
   type User = {
     placeName: string;
     file: string;
@@ -43,14 +33,13 @@ const SampleMap = () => {
     Longitude: string;
     id: string;
   };
-  type TImages = {
+  type TypeImages = {
     srcUrl: string;
   };
-  const [users, setUsers] = useState<User[]>([]);
-
+  const [spots, setSpots] = useState<User[]>([]);
   useEffect(() => {
-    const usersCollectionRef = collection(db, 'users');
-    getDocs(usersCollectionRef).then((querySnapshot) => {
+    const spotsCollectionRef = collection(db, 'spots');
+    getDocs(spotsCollectionRef).then((querySnapshot) => {
       const userList: User[] = [];
       let count: number = 0;
       querySnapshot.docs.map((doc, index) => {
@@ -67,7 +56,7 @@ const SampleMap = () => {
           count += 1;
         }
       });
-      setUsers(userList);
+      setSpots(userList);
     });
   }, []);
   const mapProps = initialMapProps;
@@ -79,66 +68,114 @@ const SampleMap = () => {
   const handleApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
     let currentInfoWindow: { close: () => void } | null = null;
 
-    users.forEach((element) => {
+    spots.forEach((element) => {
       const storage = getStorage();
-      const ImagesList: TImages[] = [];
+      const ImagesList: TypeImages[] = [];
       if (element.id) {
         const listRef = ref(storage, `${element.id}`);
         listAll(listRef)
           .then((res) => {
+            if (res.items.length === 0) {
+              const image: TypeImages = {
+                srcUrl:
+                  'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg',
+              };
+              ImagesList.push(image);
+              const contentString =
+                '<button id="infoWindow">' +
+                '<img src=" ' +
+                ImagesList[0].srcUrl +
+                '" width="200"></img>' +
+                '<h1 id="title">' +
+                element.placeName +
+                '</h1>' +
+                '<p id="description">' +
+                element.description +
+                '</p>' +
+                '</button>';
+
+              const infowindow = new maps.InfoWindow({
+                content: contentString,
+                maxWidth: 250,
+              });
+
+              const marker = new maps.Marker({
+                position: {
+                  lat: parseFloat(element.Latitude),
+                  lng: parseFloat(element.Longitude),
+                },
+                map,
+              });
+              marker.addListener('click', () => {
+                infowindow.open({
+                  anchor: marker,
+                  map,
+                  shouldFocus: false,
+                });
+                if (currentInfoWindow) {
+                  currentInfoWindow.close();
+                }
+                currentInfoWindow = infowindow;
+              });
+              infowindow.addListener('domready', () => {
+                document
+                  .getElementById('infoWindow')!
+                  .addEventListener('click', () => {
+                    navigateDetail(element.id);
+                  });
+              });
+            }
             res.items.forEach((itemRef) => {
               const starsRef = ref(storage, `${itemRef.fullPath}`);
               getDownloadURL(starsRef)
                 .then((url) => {
-                  const image: TImages = {
+                  const image: TypeImages = {
                     srcUrl: url,
                   };
                   ImagesList.push(image);
-                  if (ImagesList.length === res.items.length) {
-                    const contentString =
-                      '<button id="infoWindow">' +
-                      '<img src=" ' +
-                      ImagesList[0].srcUrl +
-                      '" width="200"></img>' +
-                      '<h1 id="title">' +
-                      element.placeName +
-                      '</h1>' +
-                      '<p id="description">' +
-                      element.description +
-                      '</p>' +
-                      '</button>';
+                  const contentString =
+                    '<button id="infoWindow">' +
+                    '<img src=" ' +
+                    ImagesList[0].srcUrl +
+                    '" width="200"></img>' +
+                    '<h1 id="title">' +
+                    element.placeName +
+                    '</h1>' +
+                    '<p id="description">' +
+                    element.description +
+                    '</p>' +
+                    '</button>';
 
-                    const infowindow = new maps.InfoWindow({
-                      content: contentString,
-                      maxWidth: 250,
-                    });
+                  const infowindow = new maps.InfoWindow({
+                    content: contentString,
+                    maxWidth: 250,
+                  });
 
-                    const marker = new maps.Marker({
-                      position: {
-                        lat: parseFloat(element.Latitude),
-                        lng: parseFloat(element.Longitude),
-                      },
+                  const marker = new maps.Marker({
+                    position: {
+                      lat: parseFloat(element.Latitude),
+                      lng: parseFloat(element.Longitude),
+                    },
+                    map,
+                  });
+                  marker.addListener('click', () => {
+                    infowindow.open({
+                      anchor: marker,
                       map,
+                      shouldFocus: false,
                     });
-                    marker.addListener('click', () => {
-                      infowindow.open({
-                        anchor: marker,
-                        map,
-                        shouldFocus: false,
+                    if (currentInfoWindow) {
+                      currentInfoWindow.close();
+                    }
+                    currentInfoWindow = infowindow;
+                  });
+                  infowindow.addListener('domready', () => {
+                    document
+                      .getElementById('infoWindow')!
+                      .addEventListener('click', () => {
+                        navigateDetail(element.id);
                       });
-                      if (currentInfoWindow) {
-                        currentInfoWindow.close();
-                      }
-                      currentInfoWindow = infowindow;
-                    });
-                    infowindow.addListener('domready', () => {
-                      document
-                        .getElementById('infoWindow')!
-                        .addEventListener('click', () => {
-                          navigateDetail(element.id);
-                        });
-                    });
-                  }
+                  });
                 })
                 .catch((error) => {
                   switch (error.code) {
@@ -170,10 +207,9 @@ const SampleMap = () => {
       }
     });
   };
-
   return (
     <>
-      {!isEmpty(users) && (
+      {!isEmpty(spots) && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: API_KEY }}
           center={mapProps.center}
@@ -186,4 +222,4 @@ const SampleMap = () => {
   );
 };
 
-export default SampleMap;
+export default MainMap;

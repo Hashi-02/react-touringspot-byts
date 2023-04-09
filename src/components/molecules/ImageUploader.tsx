@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { ref, uploadBytesResumable } from 'firebase/storage';
 import { Formik } from 'formik';
 import { FC, useState, VFC } from 'react';
 import * as yup from 'yup';
@@ -13,8 +13,6 @@ export const ImageUploader: VFC<Props> = (id) => {
   const metadata = {
     contentType: 'image/jpeg',
   };
-  const [image, setImage] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(100);
   return (
@@ -28,9 +26,7 @@ export const ImageUploader: VFC<Props> = (id) => {
             size: `${values.file.size} bytes`,
           })
         );
-        // アップロード処理
         console.log('アップロード処理');
-
         // const storageRef = storage.ref('images/test/'); //どのフォルダの配下に入れるかを設定
         const storageRef = ref(storage, `${id.id}/` + values.file.name);
         // const imagesRef = storageRef.child(image.name); //ファイル名
@@ -57,13 +53,6 @@ export const ImageUploader: VFC<Props> = (id) => {
             console.log('err', error);
             setError('ファイルアップに失敗しました。' + error);
             setProgress(100); //実行中のバーを消す
-          },
-          () => {
-            // Upload completed successfully, now we can get the download URL
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log('File available at', downloadURL);
-              setImageUrl(downloadURL);
-            });
           }
         );
       }}
@@ -113,17 +102,23 @@ export const ImageUploader: VFC<Props> = (id) => {
                 </label>
               </div>
             </div>
-            <div className="md:flex md:items-center">
-              <button
-                className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                type="submit"
-              >
-                Submit
-              </button>
+            <div className="flex justify-center place-items-center flex-col">
+              <div>
+                <button
+                  className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                  type="submit"
+                >
+                  Submit
+                </button>
+              </div>
               {error && <div>{error}</div>}
-              {progress !== 100 && <LinearProgressWithLabel value={progress} />}
+              <div>
+                {progress !== 100 && (
+                  <LinearProgressWithLabel value={progress} />
+                )}
+              </div>
+              <Thumb file={values.file} />
             </div>
-            <Thumb file={values.file} />
           </form>
         );
       }}
@@ -134,19 +129,14 @@ export const ImageUploader: VFC<Props> = (id) => {
 function LinearProgressWithLabel(props: any) {
   return (
     <>
-      <div className="flex justify-between mb-1">
-        <span className="text-base font-medium text-blue-700 dark:text-white">
-          Flowbite
-        </span>
-        <span className="text-sm font-medium text-blue-700 dark:text-white">
+      <div className="flex justify-center mb-1 ">
+        <span className="text-base font-medium text-gray-700 "></span>
+        <span className="text-sm font-medium text-gray-700 ">
           {`${Math.round(props.value)}%`}
         </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-        <div
-          className="bg-blue-600 h-2.5 rounded-full"
-          // st="width: 45%"
-        ></div>
+      <div className="w-60 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div className="bg-gray-600 h-auto w-60 rounded-full"></div>
       </div>
     </>
   );

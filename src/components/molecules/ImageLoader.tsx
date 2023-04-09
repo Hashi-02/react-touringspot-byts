@@ -1,26 +1,37 @@
 import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 import React, { useEffect, useState, VFC } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import '../../styles.css';
+
+// import required modules
+import { Navigation } from 'swiper';
+
 type Props = {
   id: string;
 };
 
 export const ImageLoader: VFC<Props> = (props) => {
-  type TImages = {
+  type TypeImages = {
     srcUrl: string;
   };
-  const [Images, setImages] = useState<TImages[]>([]);
+  const [Images, setImages] = useState<TypeImages[]>([]);
+  //使いまわせそう
   useEffect(() => {
     const storage = getStorage();
     if (props.id) {
       const listRef = ref(storage, `${props.id}`);
       listAll(listRef)
         .then((res) => {
-          const ImagesList: TImages[] = [];
+          const ImagesList: TypeImages[] = [];
           res.items.forEach((itemRef) => {
             const starsRef = ref(storage, `${itemRef.fullPath}`);
             getDownloadURL(starsRef)
               .then((url) => {
-                const image: TImages = {
+                const image: TypeImages = {
                   srcUrl: url,
                 };
                 ImagesList.push(image);
@@ -59,15 +70,15 @@ export const ImageLoader: VFC<Props> = (props) => {
   }, []);
   return (
     <>
-      {/* {Images && <p>{Images[0].srcUrl}</p>} */}
-      {Images.map((img, index) => {
-        return (
-          <div key={index}>
-            {/* <p>{img.srcUrl}</p> */}
-            <img src={img.srcUrl} alt="images" />
-          </div>
-        );
-      })}
+      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+        {Images.map((img, index) => {
+          return (
+            <SwiperSlide key={index}>
+              <img src={img.srcUrl} alt="images" className="rounded-lg h-96" />
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
     </>
   );
 };

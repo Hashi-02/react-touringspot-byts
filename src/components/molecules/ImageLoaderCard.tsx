@@ -6,22 +6,23 @@ type Props = {
 };
 
 export const ImageLoaderCard: VFC<Props> = (props) => {
-  type TImages = {
+  type TypeImages = {
     srcUrl: string;
   };
-  const [Images, setImages] = useState<TImages[]>([]);
+  const [Images, setImages] = useState<TypeImages[]>([]);
+  //使いまわせそう
   useEffect(() => {
     const storage = getStorage();
     if (props.id) {
       const listRef = ref(storage, `${props.id}`);
       listAll(listRef)
         .then((res) => {
-          const ImagesList: TImages[] = [];
+          const ImagesList: TypeImages[] = [];
           res.items.forEach((itemRef) => {
             const starsRef = ref(storage, `${itemRef.fullPath}`);
             getDownloadURL(starsRef)
               .then((url) => {
-                const image: TImages = {
+                const image: TypeImages = {
                   srcUrl: url,
                 };
                 ImagesList.push(image);

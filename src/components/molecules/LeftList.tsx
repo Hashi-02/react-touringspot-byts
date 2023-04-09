@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card } from '../atoms/card/Card';
+import { Card } from './card/Card';
 import { BaseButton } from '../atoms/button/BaseButton';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -13,10 +13,10 @@ export const LeftList: React.FC = () => {
     Longitude: string;
     id: string;
   };
-  const [users, setUsers] = useState<User[]>([]);
+  const [spots, setSpots] = useState<User[]>([]);
   useEffect(() => {
-    const usersCollectionRef = collection(db, 'users');
-    getDocs(usersCollectionRef).then((querySnapshot) => {
+    const spotsCollectionRef = collection(db, 'spots');
+    getDocs(spotsCollectionRef).then((querySnapshot) => {
       const userList: User[] = [];
       let count: number = 0;
       querySnapshot.docs.map((doc, index) => {
@@ -33,7 +33,7 @@ export const LeftList: React.FC = () => {
           count += 1;
         }
       });
-      setUsers(userList);
+      setSpots(userList);
     });
   }, []);
   return (
@@ -41,7 +41,7 @@ export const LeftList: React.FC = () => {
       <div className="text-center p-6">
         <BaseButton text="戻る" routing="/" />
       </div>
-      {users.map((user, index) => (
+      {spots.map((user, index) => (
         <div key={index.toString()}>
           <Card
             routing={'/maps/detail/' + user.id}

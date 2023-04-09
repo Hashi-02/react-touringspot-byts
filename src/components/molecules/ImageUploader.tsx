@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { ref, uploadBytesResumable } from 'firebase/storage';
 import { Formik } from 'formik';
 import { FC, useState, VFC } from 'react';
 import * as yup from 'yup';
@@ -13,8 +13,6 @@ export const ImageUploader: VFC<Props> = (id) => {
   const metadata = {
     contentType: 'image/jpeg',
   };
-
-  const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(100);
   return (
@@ -28,9 +26,7 @@ export const ImageUploader: VFC<Props> = (id) => {
             size: `${values.file.size} bytes`,
           })
         );
-        // アップロード処理
         console.log('アップロード処理');
-
         // const storageRef = storage.ref('images/test/'); //どのフォルダの配下に入れるかを設定
         const storageRef = ref(storage, `${id.id}/` + values.file.name);
         // const imagesRef = storageRef.child(image.name); //ファイル名
@@ -57,13 +53,6 @@ export const ImageUploader: VFC<Props> = (id) => {
             console.log('err', error);
             setError('ファイルアップに失敗しました。' + error);
             setProgress(100); //実行中のバーを消す
-          },
-          () => {
-            // Upload completed successfully, now we can get the download URL
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              console.log('File available at', downloadURL);
-              setImageUrl(downloadURL);
-            });
           }
         );
       }}

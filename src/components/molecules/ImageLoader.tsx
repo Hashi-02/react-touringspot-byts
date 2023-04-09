@@ -15,14 +15,12 @@ type Props = {
 };
 
 export const ImageLoader: VFC<Props> = (props) => {
-  //TImagesの名前を変える
   type TypeImages = {
     srcUrl: string;
   };
   const [Images, setImages] = useState<TypeImages[]>([]);
   //使いまわせそう
   useEffect(() => {
-    //storageからdocumentIDで写真を取得
     const storage = getStorage();
     if (props.id) {
       const listRef = ref(storage, `${props.id}`);

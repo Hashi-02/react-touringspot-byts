@@ -6,9 +6,6 @@ import { db } from '../../firebase';
 import { isEmpty } from '@firebase/util';
 import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 
-/**
- * Mapに使用するプロパティ
- */
 interface MapProps {
   center: {
     lat: number;
@@ -16,9 +13,7 @@ interface MapProps {
   };
   zoom: number;
 }
-/**
- * MapのPropsの初期値
- */
+
 const initialMapProps: MapProps = {
   center: {
     lat: 35.39,
@@ -26,14 +21,9 @@ const initialMapProps: MapProps = {
   },
   zoom: 8,
 };
-/**
- * APIキー
- */
+
 const API_KEY: string = process.env.REACT_APP_GOOGLEMAP_API_KEY;
 
-/**
- * サンプルとして地図を表示するコンポーネント
- */
 const MainMap = () => {
   type User = {
     placeName: string;
@@ -47,7 +37,6 @@ const MainMap = () => {
     srcUrl: string;
   };
   const [spots, setSpots] = useState<User[]>([]);
-  const [Images, setImages] = useState<TypeImages[]>([]);
   useEffect(() => {
     const spotsCollectionRef = collection(db, 'spots');
     getDocs(spotsCollectionRef).then((querySnapshot) => {
@@ -84,19 +73,14 @@ const MainMap = () => {
       const ImagesList: TypeImages[] = [];
       if (element.id) {
         const listRef = ref(storage, `${element.id}`);
-        console.log(spots.length);
-        console.log(listRef);
         listAll(listRef)
           .then((res) => {
-            console.log(res.items.length);
-            console.log(res);
             if (res.items.length === 0) {
               const image: TypeImages = {
                 srcUrl:
                   'https://cdn.pixabay.com/photo/2022/08/18/09/20/houses-7394390__340.jpg',
               };
               ImagesList.push(image);
-              setImages(ImagesList);
               const contentString =
                 '<button id="infoWindow">' +
                 '<img src=" ' +
@@ -142,7 +126,6 @@ const MainMap = () => {
               });
             }
             res.items.forEach((itemRef) => {
-              console.log('baba');
               const starsRef = ref(storage, `${itemRef.fullPath}`);
               getDownloadURL(starsRef)
                 .then((url) => {
@@ -150,14 +133,6 @@ const MainMap = () => {
                     srcUrl: url,
                   };
                   ImagesList.push(image);
-                  console.log('dd');
-                  console.log(url);
-                  console.log(ImagesList.length);
-                  console.log(res.items.length);
-                  console.log('aaaaaaaaa');
-                  // if (ImagesList.length === res.items.length) {
-                  setImages(ImagesList);
-                  // }
                   const contentString =
                     '<button id="infoWindow">' +
                     '<img src=" ' +
@@ -201,7 +176,6 @@ const MainMap = () => {
                         navigateDetail(element.id);
                       });
                   });
-                  // }
                 })
                 .catch((error) => {
                   switch (error.code) {
@@ -233,7 +207,6 @@ const MainMap = () => {
       }
     });
   };
-  console.log(Images);
   return (
     <>
       {!isEmpty(spots) && (

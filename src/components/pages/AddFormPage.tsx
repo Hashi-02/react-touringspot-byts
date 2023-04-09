@@ -36,7 +36,6 @@ export const AddFormPage = () => {
   const handleSubmit = async (values: Values) => {
     try {
       const time = serverTimestamp();
-      console.log(values.placeName);
       const spotsCollectionRef = collection(db, 'spots');
       const documentRef = await addDoc(spotsCollectionRef, {
         placeName: values.placeName,

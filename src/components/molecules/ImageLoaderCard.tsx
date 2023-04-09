@@ -6,7 +6,6 @@ type Props = {
 };
 
 export const ImageLoaderCard: VFC<Props> = (props) => {
-  //TImagesの名前を変える
   type TypeImages = {
     srcUrl: string;
   };

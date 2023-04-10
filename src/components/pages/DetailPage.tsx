@@ -53,3 +53,48 @@ export const DetailPage = () => {
     </>
   );
 };
+
+// initialValues={{ files: null }}
+// onSubmit={(values: any) => {
+//   alert('aaaaa');
+//   // alert(
+//   //   JSON.stringify({
+//   //     fileName: values.file.name,
+//   //     type: values.file.type,
+//   //     size: `${values.file.size} bytes`,
+//   //   })
+//   // );
+//   console.log('アップロード処理');
+//   // const storageRef = storage.ref('images/test/'); //どのフォルダの配下に入れるかを設定
+//   const storageRef = ref(storage, `${id.id}/` + values.file.name);
+//   // const imagesRef = storageRef.child(image.name); //ファイル名
+
+//   const uploadTask = uploadBytesResumable(
+//     storageRef,
+//     values.file,
+//     metadata
+//   );
+
+//   console.log('ファイルをアップする行為');
+//   // const upLoadTask = imagesRef.put(image);
+//   console.log('タスク実行前');
+
+//   uploadTask.on(
+//     'state_changed',
+//     (snapshot) => {
+//       console.log('snapshot', snapshot);
+//       const percent =
+//         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//       console.log(percent + '% done');
+//       setProgress(percent);
+//     },
+//     (error) => {
+//       console.log('err', error);
+//       setError('ファイルアップに失敗しました。' + error);
+//       setProgress(100); //実行中のバーを消す
+//     }
+//   );
+// }}
+// validationSchema={yup.object().shape({
+//   file: yup.mixed().required(),
+// })}

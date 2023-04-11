@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, VFC } from 'react';
 import GoogleMapReact from 'google-map-react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
@@ -36,8 +36,31 @@ const MainMap = () => {
   type TypeImages = {
     srcUrl: string;
   };
+  type TypePosition = {
+    lat: number;
+    lng: number;
+  };
   const [spots, setSpots] = useState<User[]>([]);
+  const [currentPosition, setCurrentPosition] = useState<TypePosition>();
+  const [centerPosition, setCenterPositon] = useState<TypePosition>();
+  const success = (data: {
+    coords: { latitude: number; longitude: number };
+  }) => {
+    const currentPosition = {
+      lat: data.coords.latitude,
+      lng: data.coords.longitude,
+    };
+    console.log(currentPosition);
+    setCurrentPosition(currentPosition);
+    setCenterPositon(currentPosition);
+  };
+
+  const error = () => {
+    console.log('error');
+    setCenterPositon(initialMapProps.center);
+  };
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error);
     const spotsCollectionRef = collection(db, 'spots');
     getDocs(spotsCollectionRef).then((querySnapshot) => {
       const userList: User[] = [];
@@ -212,13 +235,36 @@ const MainMap = () => {
       {!isEmpty(spots) && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: API_KEY }}
-          center={mapProps.center}
+          center={centerPosition}
           zoom={mapProps.zoom}
           onGoogleApiLoaded={handleApiLoaded}
           yesIWantToUseGoogleMapApiInternals={true}
-        />
+        >
+          {currentPosition && (
+            <Marker
+              lat={currentPosition.lat}
+              lng={currentPosition?.lng}
+              color={'red'}
+            />
+          )}
+        </GoogleMapReact>
       )}
     </>
+  );
+};
+type Props = {
+  lat: number;
+  lng: number;
+  color: string;
+};
+const Marker: VFC<Props> = (props) => {
+  return (
+    <div>
+      <div
+        className="pin"
+        style={{ backgroundColor: props.color, cursor: 'pointer' }}
+      />
+    </div>
   );
 };
 

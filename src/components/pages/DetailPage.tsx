@@ -16,8 +16,44 @@ export const DetailPage = () => {
     Longitude: string;
     id: string;
   };
+  type TypePosition = {
+    lat: number;
+    lng: number;
+  };
   const [detailInfo, setDetailInfo] = useState<TypeDetailInfo>();
+  const [currentPosition, setCurrentPosition] = useState<TypePosition>();
+  const success = (data: {
+    coords: { latitude: number; longitude: number };
+  }) => {
+    const currentPosition = {
+      lat: data.coords.latitude,
+      lng: data.coords.longitude,
+    };
+    console.log(currentPosition);
+    setCurrentPosition(currentPosition);
+  };
+  const error = () => {
+    console.log('error');
+  };
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error);
+    const service = new google.maps.DistanceMatrixService();
+    const origin1 = { lat: 55.93, lng: -3.118 };
+    // const origin2 = 'Greenwich, England';
+    const destinationA = 'Stockholm, Sweden';
+    const destinationB = { lat: 50.087, lng: 14.421 };
+    const request = {
+      origins: [origin1],
+      destinations: [destinationA, destinationB],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false,
+    };
+    service.getDistanceMatrix(request).then((response) => {
+      console.log(response.rows);
+    });
+
     const id = uid;
     if (id) {
       //usersの名前を変える
@@ -47,6 +83,14 @@ export const DetailPage = () => {
           </div>
           <p className="text-7xl font-bold">{detailInfo?.placeName}</p>
           <p>{detailInfo?.description}</p>
+          <p>
+            this Place is lat={detailInfo?.Latitude}
+            lng={detailInfo?.Longitude}
+          </p>
+          <p>
+            now lat={currentPosition?.lat}
+            lng={currentPosition?.lng}
+          </p>
           {detailInfo && <ImageUploader id={detailInfo.id} />}
         </div>
       </div>

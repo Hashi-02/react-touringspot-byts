@@ -128,17 +128,11 @@ export const DetailPage = () => {
           </div>
           <p className="text-7xl font-bold">{detailInfo?.placeName}</p>
           <p>{detailInfo?.description}</p>
+
           <p>
-            this Place is lat={detailInfo?.Latitude}
-            lng={detailInfo?.Longitude}
-          </p>
-          <p>
-            now lat={currentPosition?.lat}
-            lng={currentPosition?.lng}
-          </p>
-          <p>
-            now distance={distanceMatrix?.distance}
-            time={distanceMatrix?.duration}
+            現在地からここまで
+            {distanceMatrix?.duration}
+            かかるよ ({distanceMatrix?.distance})
           </p>
           {detailInfo && <ImageUploader id={detailInfo.id} />}
         </div>

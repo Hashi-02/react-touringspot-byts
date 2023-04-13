@@ -20,8 +20,13 @@ export const DetailPage = () => {
     lat: number;
     lng: number;
   };
+  type TypeDistanceMatrix = {
+    distance: string;
+    duration: string;
+  };
   const [detailInfo, setDetailInfo] = useState<TypeDetailInfo>();
   const [currentPosition, setCurrentPosition] = useState<TypePosition>();
+  const [distanceMatrix, setDistanceMatrix] = useState<TypeDistanceMatrix>();
   const success = (data: {
     coords: { latitude: number; longitude: number };
   }) => {
@@ -31,17 +36,35 @@ export const DetailPage = () => {
     };
     console.log(currentPosition);
     setCurrentPosition(currentPosition);
+    getDetailInfo(currentPosition);
   };
   const error = () => {
     console.log('error');
   };
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(success, error);
+  const getDistanceMatrix = (props: {
+    Info?: {
+      placeName: string;
+      file: string;
+      description: string;
+      Latitude: string;
+      Longitude: string;
+      id: string;
+    };
+    originLatLng?: { lat: number; lng: number };
+    props?: any;
+    lng?: any;
+  }) => {
     const service = new google.maps.DistanceMatrixService();
-    const origin1 = { lat: 55.93, lng: -3.118 };
+    const origin1 = {
+      lat: props.originLatLng?.lat,
+      lng: props.originLatLng?.lng,
+    };
     // const origin2 = 'Greenwich, England';
-    const destinationA = 'Stockholm, Sweden';
-    const destinationB = { lat: 50.087, lng: 14.421 };
+    const destinationA = props.Info?.placeName;
+    const destinationB = {
+      lat: props.Info?.Latitude,
+      lng: props.Info?.Longitude,
+    };
     const request = {
       origins: [origin1],
       destinations: [destinationA, destinationB],
@@ -50,10 +73,17 @@ export const DetailPage = () => {
       avoidHighways: false,
       avoidTolls: false,
     };
+    // @ts-ignore
     service.getDistanceMatrix(request).then((response) => {
-      console.log(response.rows);
+      console.log(response.rows[0].elements[0]);
+      const distanceMatrixInfo: TypeDistanceMatrix = {
+        distance: response.rows[0].elements[0].distance.text,
+        duration: response.rows[0].elements[0].duration.text,
+      };
+      setDistanceMatrix(distanceMatrixInfo);
     });
-
+  };
+  const getDetailInfo = (props: { lat: number; lng: number }) => {
     const id = uid;
     if (id) {
       //usersの名前を変える
@@ -69,9 +99,24 @@ export const DetailPage = () => {
             id: documentSnapshot.id,
           };
           setDetailInfo(Info);
+          console.log(Info);
+          const originLatLng = props;
+          const distanceInfo = {
+            Info,
+            originLatLng,
+          };
+          if (distanceInfo) {
+            getDistanceMatrix(distanceInfo);
+          }
+
+          console.log('ブー');
+          console.log(currentPosition);
         }
       });
     }
+  };
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error);
   }, []);
   return (
     <>
@@ -90,6 +135,10 @@ export const DetailPage = () => {
           <p>
             now lat={currentPosition?.lat}
             lng={currentPosition?.lng}
+          </p>
+          <p>
+            now distance={distanceMatrix?.distance}
+            time={distanceMatrix?.duration}
           </p>
           {detailInfo && <ImageUploader id={detailInfo.id} />}
         </div>

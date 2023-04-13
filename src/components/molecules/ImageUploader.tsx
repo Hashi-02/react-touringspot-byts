@@ -75,14 +75,6 @@ export const ImageUploader: VFC<Props> = (id) => {
                   })
                 );
                 console.log(values);
-                console.log({
-                  // @ts-ignore
-                  files: values.files.map((file) => ({
-                    fileName: file.name,
-                    type: file.type,
-                    size: `${file.size} bytes`,
-                  })),
-                });
                 console.log('アップロード処理');
 
                 const storageRef = ref(
@@ -119,7 +111,8 @@ export const ImageUploader: VFC<Props> = (id) => {
               validationSchema={yup.object().shape({
                 files: yup.mixed().required(),
               })}
-              render={({ values, handleSubmit, setFieldValue }) => {
+            >
+              {({ values, handleSubmit, setFieldValue }) => {
                 return (
                   <form onSubmit={handleSubmit}>
                     <div className="flex justify-center">
@@ -167,7 +160,7 @@ export const ImageUploader: VFC<Props> = (id) => {
                   </form>
                 );
               }}
-            />
+            </Formik>
           </div>
         );
       }}
@@ -195,7 +188,9 @@ const UploadComponent = (props: { setFieldValue: any }) => {
   const { setFieldValue } = props;
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     // @ts-ignore
-    accept: 'image/*',
+    accept: {
+      'image/*': [],
+    },
     onDrop: (acceptedFiles) => {
       setFieldValue('files', acceptedFiles);
     },

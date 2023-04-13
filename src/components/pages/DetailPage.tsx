@@ -16,8 +16,74 @@ export const DetailPage = () => {
     Longitude: string;
     id: string;
   };
+  type TypePosition = {
+    lat: number;
+    lng: number;
+  };
+  type TypeDistanceMatrix = {
+    distance: string;
+    duration: string;
+  };
   const [detailInfo, setDetailInfo] = useState<TypeDetailInfo>();
-  useEffect(() => {
+  const [currentPosition, setCurrentPosition] = useState<TypePosition>();
+  const [distanceMatrix, setDistanceMatrix] = useState<TypeDistanceMatrix>();
+  const success = (data: {
+    coords: { latitude: number; longitude: number };
+  }) => {
+    const currentPosition = {
+      lat: data.coords.latitude,
+      lng: data.coords.longitude,
+    };
+    console.log(currentPosition);
+    setCurrentPosition(currentPosition);
+    getDetailInfo(currentPosition);
+  };
+  const error = () => {
+    console.log('error');
+  };
+  const getDistanceMatrix = (props: {
+    Info?: {
+      placeName: string;
+      file: string;
+      description: string;
+      Latitude: string;
+      Longitude: string;
+      id: string;
+    };
+    originLatLng?: { lat: number; lng: number };
+    props?: any;
+    lng?: any;
+  }) => {
+    const service = new google.maps.DistanceMatrixService();
+    const origin1 = {
+      lat: props.originLatLng?.lat,
+      lng: props.originLatLng?.lng,
+    };
+    // const origin2 = 'Greenwich, England';
+    const destinationA = props.Info?.placeName;
+    const destinationB = {
+      lat: props.Info?.Latitude,
+      lng: props.Info?.Longitude,
+    };
+    const request = {
+      origins: [origin1],
+      destinations: [destinationA, destinationB],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false,
+    };
+    // @ts-ignore
+    service.getDistanceMatrix(request).then((response) => {
+      console.log(response.rows[0].elements[0]);
+      const distanceMatrixInfo: TypeDistanceMatrix = {
+        distance: response.rows[0].elements[0].distance.text,
+        duration: response.rows[0].elements[0].duration.text,
+      };
+      setDistanceMatrix(distanceMatrixInfo);
+    });
+  };
+  const getDetailInfo = (props: { lat: number; lng: number }) => {
     const id = uid;
     if (id) {
       //usersの名前を変える
@@ -33,9 +99,24 @@ export const DetailPage = () => {
             id: documentSnapshot.id,
           };
           setDetailInfo(Info);
+          console.log(Info);
+          const originLatLng = props;
+          const distanceInfo = {
+            Info,
+            originLatLng,
+          };
+          if (distanceInfo) {
+            getDistanceMatrix(distanceInfo);
+          }
+
+          console.log('ブー');
+          console.log(currentPosition);
         }
       });
     }
+  };
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error);
   }, []);
   return (
     <>
@@ -47,6 +128,12 @@ export const DetailPage = () => {
           </div>
           <p className="text-7xl font-bold">{detailInfo?.placeName}</p>
           <p>{detailInfo?.description}</p>
+
+          <p>
+            現在地からここまで
+            {distanceMatrix?.duration}
+            かかるよ ({distanceMatrix?.distance})
+          </p>
           {detailInfo && <ImageUploader id={detailInfo.id} />}
         </div>
       </div>
